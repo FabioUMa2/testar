@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+    wordpress:
+        image: wordpress:latest
+        ports:
+            - '8080:80'
+        depends_on:
+            - mysql
+        environment:
+            MYSQL_HOST: mysql
+            MYSQL_USER: root
+            MYSQL_PASSWORD: root
+            MYSQL_DB: sd23
+        volumes:
+            - ./wordpressvol:/var/www/html
+        networks:
+            sd:
+        container_name: wordpress
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:80"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+    mysql:
+        image: mysql:latest
+        ports:
+            - '3333:3306'
+        restart: always
+        environment:
+            MYSQL_DATABASE: sd23
+            MYSQL_ROOT_PASSWORD: root
+        networks:
+            sd:
+        container_name: mysql
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+networks:
+    sd:
+        driver: bridge
