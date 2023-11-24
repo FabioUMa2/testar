@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,11 +25,11 @@ jobs:
         username: fabioabreuuma
         password: 879123fefa
 
-    - name: Build and push
-      uses: docker/build-push-action@v5
-      with:
-        push: true
-        tags:  fabioabreuuma/client:latest
-
-    - name: Image digest
-      run: echo ${{ steps.docker_build.outputs.digest }}
+    - name: Pull and push
+      run: |
+        docker pull wordpress:latest
+        docker tag wordpress:latest fabioabreuuma/wordpress:latest
+        docker push fabioabreuuma/wordpress:latest
+        docker pull mysql:latest
+        docker tag mysql:latest fabioabreuuma/mysql:latest
+        docker push fabioabreuuma/mysql:latest
